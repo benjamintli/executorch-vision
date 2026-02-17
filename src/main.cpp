@@ -1,8 +1,8 @@
-// Minimal binary for the parakeet library.
+// Minimal binary for the executorch-vision library.
 #include <iostream>
-#include "parakeet.h"
+#include "executorch_vision.h"
 
 int main() {
-  std::cout << "parakeet: " << parakeet::Add(2, 3) << '\n';
+  std::cout << "executorch-vision: " << executorch_vision::Add(2, 3) << '\n';
   return 0;
 }

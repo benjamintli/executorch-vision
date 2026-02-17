@@ -10,7 +10,7 @@ all: build
 
 configure:
 	@mkdir -p $(BUILD_DIR)
-	$(CMAKE) -S . -B $(BUILD_DIR) -DPARAKEET_ENABLE_TESTS=ON
+	$(CMAKE) -S . -B $(BUILD_DIR) -DEXECUTORCH_VISION_ENABLE_TESTS=ON
 
 build: configure
 	@$(CMAKE_BUILD)
@@ -19,7 +19,7 @@ test: build
 	@ctest --test-dir $(BUILD_DIR) --output-on-failure
 
 run: build
-	@$(BUILD_DIR)/parakeet_bin
+	@$(BUILD_DIR)/executorch_vision_bin
 
 format:
 	@if command -v clang-format >/dev/null 2>&1; then \

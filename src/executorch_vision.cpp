@@ -1,10 +1,10 @@
 // Copyright
 // Simple implementation for demo purposes following Google C++ style.
 
-#include "parakeet.h"
+#include "executorch_vision.h"
 
-namespace parakeet {
+namespace executorch_vision {
 
 int Add(int a, int b) { return a + b; }
 
-}  // namespace parakeet
+}  // namespace executorch_vision

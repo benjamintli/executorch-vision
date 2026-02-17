@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(parakeet_cpp VERSION 0.1.0 LANGUAGES CXX)
+project(executorch_vision VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -7,20 +7,20 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Enable compile commands for clang-tidy
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(PARAKEET_CLANG_TIDY_RUN_ARGS "-p=${CMAKE_BINARY_DIR}")
+set(EXECUTORCH_VISION_CLANG_TIDY_RUN_ARGS "-p=${CMAKE_BINARY_DIR}")
 
 include(FetchContent)
 
-option(PARAKEET_ENABLE_TESTS "Enable building tests (requires GoogleTest)." ON)
+option(EXECUTORCH_VISION_ENABLE_TESTS "Enable building tests (requires GoogleTest)." ON)
 
-add_library(parakeet_lib src/parakeet.cpp)
-target_include_directories(parakeet_lib PUBLIC include)
-target_compile_features(parakeet_lib PUBLIC cxx_std_17)
+add_library(executorch_vision_lib src/executorch_vision.cpp)
+target_include_directories(executorch_vision_lib PUBLIC include)
+target_compile_features(executorch_vision_lib PUBLIC cxx_std_17)
 
-add_executable(parakeet_bin src/main.cpp)
-target_link_libraries(parakeet_bin PRIVATE parakeet_lib)
+add_executable(executorch_vision_bin src/main.cpp)
+target_link_libraries(executorch_vision_bin PRIVATE executorch_vision_lib)
 
-if(PARAKEET_ENABLE_TESTS)
+if(EXECUTORCH_VISION_ENABLE_TESTS)
   enable_testing()
 
   # Prefer system-installed GTest (via package manager). If not found, fall back to FetchContent.
@@ -39,17 +39,17 @@ if(PARAKEET_ENABLE_TESTS)
   FetchContent_MakeAvailable(googletest)
   endif()
 
-  add_executable(parakeet_test tests/parakeet_test.cpp)
+  add_executable(executorch_vision_test tests/executorch_vision_test.cpp)
   # Link against the googletest target provided by either the package config or the
   # FetchContent subproject. Prefer the imported target if present.
   if(TARGET GTest::gtest_main)
-    target_link_libraries(parakeet_test PRIVATE parakeet_lib GTest::gtest_main)
+    target_link_libraries(executorch_vision_test PRIVATE executorch_vision_lib GTest::gtest_main)
   else()
-    target_link_libraries(parakeet_test PRIVATE parakeet_lib gtest_main)
+    target_link_libraries(executorch_vision_test PRIVATE executorch_vision_lib gtest_main)
   endif()
-  add_test(NAME parakeet-test COMMAND parakeet_test)
+  add_test(NAME executorch-vision-test COMMAND executorch_vision_test)
 else()
-  message(STATUS "PARAKEET_ENABLE_TESTS is OFF: tests will not be built")
+  message(STATUS "EXECUTORCH_VISION_ENABLE_TESTS is OFF: tests will not be built")
 endif()
 
 # Formatting target using clang-format
@@ -71,11 +71,11 @@ if(CLANG_TIDY)
   set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY};-checks=*, -llvm-header-guard")
 
   # Add a convenience target to run clang-tidy over all source files.
-  file(GLOB_RECURSE PARAKEET_SRC_FILES CONFIGURE_DEPENDS
+  file(GLOB_RECURSE EXECUTORCH_VISION_SRC_FILES CONFIGURE_DEPENDS
     ${CMAKE_SOURCE_DIR}/src/*.cpp
     ${CMAKE_SOURCE_DIR}/include/*.h)
   add_custom_target(tidy
-    COMMAND ${CLANG_TIDY} ${PARAKEET_SRC_FILES} -- ${PARAKEET_CLANG_TIDY_RUN_ARGS}
+    COMMAND ${CLANG_TIDY} ${EXECUTORCH_VISION_SRC_FILES} -- ${EXECUTORCH_VISION_CLANG_TIDY_RUN_ARGS}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Running clang-tidy over project sources"
   )
