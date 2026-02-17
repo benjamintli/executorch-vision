@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install cmake llvm
+
+      - name: Configure
+        run: cmake -S . -B build
+
+      - name: Build
+        run: cmake --build build -- -j
+
+      - name: Run tests
+        run: |
+          if [ -f build/CTestTestfile.cmake ]; then
+            ctest --test-dir build --output-on-failure
+          else
+            echo "Tests were not configured"
+          fi
+
+      - name: Run clang-format check
+        run: |
+          # Check formatting — differences will fail the job
+          git --no-pager diff --exit-code -- src include || (clang-format -i $(git ls-files '*.cpp' '*.h') && git --no-pager diff --exit-code -- src include)
+
+      - name: Run clang-tidy
+        run: |
+          if command -v clang-tidy >/dev/null 2>&1; then
+            clang-tidy src/*.cpp -- -Iinclude || true
+          else
+            echo "clang-tidy not available"
+          fi

@@ -1,0 +1,31 @@
+{
+  // Exclude build artifacts from search and file watching
+  "files.exclude": {
+    "**/build": true,
+    "**/.clangd": true
+  },
+  "search.exclude": {
+    "**/build": true,
+    "**/compile_commands.json": true
+  },
+  "files.watcherExclude": {
+    "**/build/**": true
+  },
+
+  // Format on save for C/C++ only
+  "[cpp]": {
+    "editor.formatOnSave": true
+  },
+  "[c]": {
+    "editor.formatOnSave": true
+  },
+
+  // Use clang-format if available
+  "C_Cpp.clang_format_path": "clang-format",
+
+  // Use compileCommands for IntelliSense when available
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+
+  // Suggest using clangd if available
+  "C_Cpp.intelliSenseEngine": "Default"
+}
