@@ -13,7 +13,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Sync executorch submodule
-        run: git submodule update --init --depth 1 third_party/executorch
+        run: |
+          git submodule update --init --depth 1 third_party/executorch
+          git -C third_party/executorch submodule update --init --depth 1 --recursive
 
       - name: Install dependencies
         run: |
