@@ -12,6 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Sync executorch submodule
+        run: git submodule update --init --depth 1 third_party/executorch
+
       - name: Install dependencies
         run: |
           brew update
