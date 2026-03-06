@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.24)
 project(executorch_vision VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -11,11 +11,32 @@ set(EXECUTORCH_VISION_CLANG_TIDY_RUN_ARGS "-p=${CMAKE_BINARY_DIR}")
 
 include(FetchContent)
 
+# ExecuTorch
+set(EXECUTORCH_BUILD_EXTENSION_MODULE ON CACHE BOOL "")
+set(EXECUTORCH_BUILD_EXTENSION_TENSOR ON CACHE BOOL "")
+set(EXECUTORCH_BUILD_EXTENSION_NAMED_DATA_MAP ON CACHE BOOL "")
+set(EXECUTORCH_BUILD_XNNPACK ON CACHE BOOL "")
+add_subdirectory(third_party/executorch)
+
 option(EXECUTORCH_VISION_ENABLE_TESTS "Enable building tests (requires GoogleTest)." ON)
 
-add_library(executorch_vision_lib src/executorch_vision.cpp)
-target_include_directories(executorch_vision_lib PUBLIC include)
+add_library(executorch_vision_lib src/model.cpp)
+target_include_directories(executorch_vision_lib
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
 target_compile_features(executorch_vision_lib PUBLIC cxx_std_17)
+target_link_libraries(
+  executorch_vision_lib
+  PRIVATE
+    executorch
+    $<LINK_LIBRARY:WHOLE_ARCHIVE,executorch::backends>
+    executorch::extensions
+    executorch::kernels
+)
 
 add_executable(executorch_vision_bin src/main.cpp)
 target_link_libraries(executorch_vision_bin PRIVATE executorch_vision_lib)
